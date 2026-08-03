@@ -1,1 +1,188 @@
+---
+title: "Results"
+format: html
+embed-resources: true
+execute:
+  echo: false
+---
+
 # Results
+Cluster analysis revealed that most clusters represent broad regional groupings, where gradually changing features like lower average temperatures in the north also had higher solar access and certain geographic locations also showed trends towards higher wind speeds. The other main component was high demand urban areas extract into their own clusters, and those clusters tended to be region bound as well. Microgrids perform similarly within each cluster, and can offer similar resource access, where one urban, southern cluster might expect all of the zip codes in that cluster to have similarly high demand and solar access. 
+
+Individual clusters can be inspected, and notably the green cluster is characterized by high demand, high solar locations where a microgrid would thrive. 
+
+Attempts to look at the existing microgrid installations in terms of their solar and wind installations were unsuccessful, presumably due to how differing microgrid installations have different goals. One microgrid might only be used as a battery infrastructure to maintain power to a hospital, and isn’t necessarily interested in renewable power sources. Some microgrids were in dense areas where a solar or wind installation might not be space effective. The confounding variables were very strong, and there was no notable relationship observed between renewable access and the observed installations. 
+
+Upon closer inspection the wind data in particular was very problematic, as there are many issues with using wind speed as an estimation for wind power. Our data source [@ERA5] shows average wind speed, but wind power is proportional to the cube of wind speed. There are rough metrics for approximating wind power from average speed but our calculations showed that even the windiest areas were under performing expectations. Actual industry estimates are a very involved process that involve analysis at a more detailed scale than monthly averages across zip codes and this type of analysis is out of scope for this project. 
+
+
+
+```{python}
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import RobustScaler
+import matplotlib.pyplot as plt
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+
+
+features = pd.read_csv("../project-workbook-hayden_logan_m/shared_data/clust_features.csv")
+temp_df = pd.read_csv("../project-workbook-hayden_logan_m/shared_data/zip_temps.csv")
+
+temp_df = (
+    temp_df
+    .rename(columns={
+        "Zip Code": "zip_code",
+        "tmean_202501": "jan",
+        "tmean_202502": "feb",
+        "tmean_202503": "mar",
+        "tmean_202504": "apr",
+        "tmean_202505": "may",
+        "tmean_202506": "jun",
+        "tmean_202507": "jul",
+        "tmean_202508": "aug",
+        "tmean_202509": "sep",
+        "tmean_202510": "oct",
+        "tmean_202511": "nov",
+        "tmean_202512": "dec",
+    })
+)
+```
+
+
+```{python}
+cluster_cols = [
+    # Demand
+    "annual_avg_demand",
+    "seasonal_amp_demand",
+    "phase_x_demand",
+    "phase_y_demand",
+
+    # Temperature
+    "annual_avg_temp",
+    "seasonal_amp_temp",
+    "phase_x_temp",
+    "phase_y_temp",
+
+    # Solar
+    "annual_avg_solar",
+    "seasonal_amp_solar",
+    "phase_x_solar",
+    "phase_y_solar",
+
+    # Wind
+    "annual_avg_wind",
+    "seasonal_amp_wind",
+    "phase_x_wind",
+    "phase_y_wind",
+]
+```
+
+```{python}
+magnitude_cols = [
+    "annual_avg_demand",
+    "seasonal_amp_demand",
+    "annual_avg_temp",
+    "seasonal_amp_temp",
+    "annual_avg_solar",
+    "seasonal_amp_solar",
+    "annual_avg_wind",
+    "seasonal_amp_wind",
+]
+
+phase_cols = [
+    "phase_x_demand", "phase_y_demand",
+    "phase_x_temp",   "phase_y_temp",
+    "phase_x_solar",  "phase_y_solar",
+    "phase_x_wind",   "phase_y_wind",
+]
+
+X = features.copy()
+
+# Log demand
+X["annual_avg_demand"] = np.log1p(X["annual_avg_demand"])
+X["seasonal_amp_demand"] = np.log1p(X["seasonal_amp_demand"])
+
+# Scale only magnitude variables
+X[magnitude_cols] = RobustScaler().fit_transform(X[magnitude_cols])
+
+X_scaled = X[cluster_cols]
+
+# Leave phase variables unchanged
+```
+
+
+
+```{python}
+
+# Fit PCA on scaled features
+pca = PCA()
+X_pca = pca.fit_transform(X_scaled)
+
+km = KMeans(
+    n_clusters=10,
+    random_state=42,
+    n_init=5
+)
+
+labels = km.fit_predict(X_pca)
+
+map_df = features.merge(
+    temp_df[["zip_code", "LATITUDE", "LONGITUDE"]],
+    on="zip_code"
+)
+
+# Store temporarily for plotting
+map_df["cluster"] = labels
+```
+
+```{python}
+
+lda = LinearDiscriminantAnalysis(n_components=2)
+lda_coords = lda.fit_transform(X_pca, labels)
+
+n = len(features)
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(
+    lda_coords[:, 0],
+    lda_coords[:, 1],
+    c=labels,
+    s=5,
+    cmap="tab10",
+    alpha=0.25,
+)
+
+plt.title(f"Linear Discriminant Analysis of ZIP Code Clusters (n = {n:,})")
+plt.xlabel("Linear Discriminant 1")
+plt.ylabel("Linear Discriminant 2")
+
+plt.show()
+```
+
+
+```{python}
+plt.figure(figsize=(10,8))
+
+n = len(map_df)
+
+plt.figure(figsize=(10, 6))
+
+plt.scatter(
+    map_df["LONGITUDE"],
+    map_df["LATITUDE"],
+    c=labels,
+    s=2,
+    cmap="tab10",
+    alpha=0.5,
+)
+
+plt.title(f"Geographic Distribution of ZIP Code Clusters (n = {n:,})")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+
+plt.show()
+```
