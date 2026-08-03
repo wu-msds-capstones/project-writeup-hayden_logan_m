@@ -1,6 +1,6 @@
 ---
 title: "Increasing Access to Electricity with DER-Powered Microgrids"
-subtitle: "DATA 510 Data Science Capstone, Summer 2026
+subtitle: "DATA 510 Data Science Capstone, Summer 2026"
 authors:
   - Hayden Coke
   - Logan MacFarland
