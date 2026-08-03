@@ -13,6 +13,7 @@ format:
     theme:
       light: lightly
       dark: darkly
+embed-resources: true
 ---
 
 {{< include _01_abstract.qmd >}}

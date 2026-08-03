@@ -1,12 +1,6 @@
----
-title: "Results"
-format: html
-embed-resources: true
-execute:
-  echo: false
----
 
 # Results
+
 Cluster analysis revealed that most clusters represent broad regional groupings, where gradually changing features like lower average temperatures in the north also had higher solar access and certain geographic locations also showed trends towards higher wind speeds. The other main component was high demand urban areas extract into their own clusters, and those clusters tended to be region bound as well. Microgrids perform similarly within each cluster, and can offer similar resource access, where one urban, southern cluster might expect all of the zip codes in that cluster to have similarly high demand and solar access. 
 
 Individual clusters can be inspected, and notably the green cluster is characterized by high demand, high solar locations where a microgrid would thrive. 
@@ -17,7 +11,7 @@ Upon closer inspection the wind data in particular was very problematic, as ther
 
 
 
-```{python}
+```{python echo=False}
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -48,11 +42,7 @@ temp_df = (
         "tmean_202511": "nov",
         "tmean_202512": "dec",
     })
-)
-```
-
-
-```{python}
+) 
 cluster_cols = [
     # Demand
     "annual_avg_demand",
@@ -78,9 +68,7 @@ cluster_cols = [
     "phase_x_wind",
     "phase_y_wind",
 ]
-```
 
-```{python}
 magnitude_cols = [
     "annual_avg_demand",
     "seasonal_amp_demand",
@@ -111,12 +99,6 @@ X[magnitude_cols] = RobustScaler().fit_transform(X[magnitude_cols])
 X_scaled = X[cluster_cols]
 
 # Leave phase variables unchanged
-```
-
-
-
-```{python}
-
 # Fit PCA on scaled features
 pca = PCA()
 X_pca = pca.fit_transform(X_scaled)
@@ -136,9 +118,7 @@ map_df = features.merge(
 
 # Store temporarily for plotting
 map_df["cluster"] = labels
-```
 
-```{python}
 
 lda = LinearDiscriminantAnalysis(n_components=2)
 lda_coords = lda.fit_transform(X_pca, labels)
@@ -161,11 +141,6 @@ plt.xlabel("Linear Discriminant 1")
 plt.ylabel("Linear Discriminant 2")
 
 plt.show()
-```
-
-
-```{python}
-plt.figure(figsize=(10,8))
 
 n = len(map_df)
 
