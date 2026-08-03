@@ -1,3 +1,3 @@
-# Introduction
+# Abstract
 
-Something something, and then I state some citable facts [@Zelner2022].
+When communities lack access to reliable power, their most vulnerable members may risk losing access to medical care, heating and cooling, cooking, and other necessities. These interruptions can range from inconvenient to life threatening. Using Distributed Energy Resources (DER), communities in need of more reliable access to power can install a microgrid that connects to their main power grid and disconnects in the event of a power failure in the main grid, ensuring minimal interruption. Our research project identifies zip codes that may benefit from DER-powered microgrids, and how effective wind and solar power would be at each location.
