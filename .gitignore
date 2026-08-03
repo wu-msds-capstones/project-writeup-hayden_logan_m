@@ -2,4 +2,7 @@
 /_output/
 
 **/*.quarto_ipynb
+
 .env
+.venv
+.Rhistory
