@@ -1,10 +1,12 @@
 ---
-title: "Capstone Project"
-subtitle: Subtitle
+title: "Increasing Access to Electricity with DER-Powered Microgrids"
+subtitle: "DATA 510 Data Science Capstone, Summer 2026
 authors:
-  - Bob
-  - Jane
+  - Hayden Coke
+  - Logan MacFarland
 bibliography: references.bib
+nocite: |
+  @*
 title-block-banner: true
 format: 
   html:

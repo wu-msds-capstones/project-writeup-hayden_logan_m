@@ -1,1 +1,7 @@
-# Background
+# Introduction and Background
+
+In a world with an ever increasing reliance on electricity, the demand for energy is not always met by our current electrical grid infrastructure. Power grids are susceptible to natural disasters or weather events that make them fallible and unreliable. Lack of reliable access to heat and electricity and pose health and safety risks, especially to vulnerable populations [@EVI]. One method of increasing energy resiliency is the use of onsite energy installation, also known as “behind-the-meter” systems, which produce and consume power on-site rather than solely consuming power transmitted through an electrical grid. Microgrids are a form of onsite energy installation that can provide power to entire communities in a more reliable and efficient manner than traditional grid connection, and are typically powered by solar panels, wind turbines, backup batteries, and/or diesel generators [@Microgrids_Basics]. 
+
+This research project seeks to answer the question: which zip codes may benefit from the installation of microgrids powered by Distributed Energy Resources such as wind and solar?
+
+Answering this question involves examining geographic characteristics of each zip code, such as annual solar radiation and wind speed, as well as human-centric characteristics such as energy demand and vulnerability to power outage. 
