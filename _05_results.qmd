@@ -1,4 +1,3 @@
-
 # Results
 
 Cluster analysis revealed that most clusters represent broad regional groupings, where gradually changing features like lower average temperatures in the north also had higher solar access and certain geographic locations also showed trends towards higher wind speeds. The other main component was high demand urban areas extract into their own clusters, and those clusters tended to be region bound as well. Microgrids perform similarly within each cluster, and can offer similar resource access, where one urban, southern cluster might expect all of the zip codes in that cluster to have similarly high demand and solar access. 
@@ -11,7 +10,8 @@ Upon closer inspection the wind data in particular was very problematic, as ther
 
 
 
-```{python echo=False}
+```{python echo=FALSE}
+#| label: PCA figures
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
