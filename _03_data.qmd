@@ -1,1 +1,13 @@
 # Data
+
+All of our datasets came from publicly available sources. Our sources that depended on API requests required access tokens, which were free to acquire. Data acquired through API calls were stored as CSV files prior to ingestion. Once all necessary data was acquired, each dataset was uploaded to a Postgres database, where it could be queried and joined with other datasets. 
+
+Our first dataset [@OEI] described all microgrid and Combined Heat and Power (CHP) installations in the United States, including year established, an indicator if the installation covered critical infrastructure, if the grid was connected to the main grid, and power information. Power information included the total capacity of the grid in terms of storage and throughput, as well as which energy features were installed and approximate capacity, for example how much solar power, wind power, etc. 
+
+The dataset that we used to define a zip code’s vulnerability to power outages came from  Mapping the electric vulnerability index: A metric for targeting energy storage resilience solutions by @EVI. The Electric Vulnerability Index served as a proxy for how much each zip code was in need of a microgrid, independent of other characteristics such as energy demand.
+
+Demand data [@Demand] referenced monthly power usage for each zip code. 
+
+The solar, wind, and temperature data was all available at latitude/longitude level, so zip codes had to be defined by their centroid coordinates, and a dataset that maps population weighted centroids was used [@ZIP_centroids]. The solar API [@Solar_API] returned monthly solar output directly from latitude/longitude values.
+
+The wind [@ERA5] and temperature [@Prism] datasets were maps, where each specific latitude/longitude wasn’t represented in the dataset, so the dataset mapping each zip to monthly temperature and average wind speeds was computed by finding nearest neighbor points. For performance this was done with a kdtree method.  

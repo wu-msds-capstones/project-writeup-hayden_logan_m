@@ -1,11 +1,11 @@
 # Analysis
 
-To find which zip codes may or may not be suitable candidates for microgrid installation, we created a Machine Learning Clustering model that clustered zip codes based on features describing their use. Features included annual wind speed, solar exposure, temperature, and demand. 
-
-To convert monthly summary statistics into a machine readable format, features were engineered by computing seasonal phase, amplitude, and averages.
-Features were scaled and transformed into principal components to reduce amount of correlated information and improve clustering performance.
-
 We used above-average EVI to determine which zip codes were in high need of microgrid installation. 14161 zip codes were identified as having above-average vulnerability. Out of the high need zip codes, 6946 of those zip codes were also identified as having above-average potential photovoltaic output. 
+
+Once all the seasonal data points were gathered, they were fit to a seasonal approximation by fitting their phase and amplitude to a sine wave. The engineered features describing the seasonality of each metric were then scaled and specifically demand was log transformed before they were all fed into principal component analysis for dimensionality reduction. 
+
+It was found that 9 dimensions could explain 95% of the variance for the input dataset, and these 9 dimensions were then used for clustering using kmeans into 10 clusters. The resulting clusters were visualized using linear discriminant analysis and a geographic projection. 
+
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 #| label: solar vs. vulnerability figure
@@ -37,15 +37,3 @@ g = ggMarginal(p, type="density",
 
 g
 ```
-
-To analyze microgrid benefits, we gathered data to describe each installation candidate zip code in terms of energy demand, average temperature, solar exposure, and average wind speed. 
-
-Demand data [@Demand] referenced monthly power usage for each zip code. 
-
-The solar, wind, and temperature data was all available at latitude/longitude level, so zip codes had to be defined by their centroid coordinates, and a dataset that maps population weighted centroids was used [@ZIP_centroids]. The solar API [@Solar_API] returned monthly solar output directly from latitude/longitude values.
-
-The wind [@ERA5] and temperature [@Prism] datasets were maps, where each specific latitude/longitude wasn’t represented in the dataset, so the dataset mapping each zip to monthly temperature and average wind speeds was computed by finding nearest neighbor points. For performance this was done with a kdtree method. 
-
-Once all the seasonal data points were gathered, they were fit to a seasonal approximation by fitting their phase and amplitude to a sine wave. The engineered features describing the seasonality of each metric were then scaled and specifically demand was log transformed before they were all fed into principal component analysis for dimensionality reduction. 
-
-It was found that 9 dimensions could explain 95% of the variance for the input dataset, and these 9 dimensions were then used for clustering using kmeans into 10 clusters. The resulting clusters were visualized using linear discriminant analysis and a geographic projection. 
