@@ -13,8 +13,8 @@ format:
       dark: darkly
 ---
 
-{{< include _01_intro.qmd >}}
-{{< include _02_background.qmd >}}
+{{< include _01_abstract.qmd >}}
+{{< include _02_intro_background.qmd >}}
 {{< include _03_data.qmd >}}
 {{< include _04_analysis.qmd >}}
 {{< include _05_results.qmd >}}
