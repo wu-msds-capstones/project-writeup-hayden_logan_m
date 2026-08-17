@@ -41,8 +41,6 @@ To analyze for well each zip code would perform as a microgrid candidate, each z
 
 Each monthly summary as a raw data point was then fit to a sine wave, where the components of the sine wave including baseline, amplitude, and phase, were to be used by the clustering model. Reducing each modular month into a continuous sine wave for each feature is visualized below, with an example of monthly solar radiation for Portland, OR. Using the three features of the sine wave instead of the raw data allows the model to more easily compare zip codes by how seasonal they are, how their average month is, and when the seasonality is at its peak.
 
-(logan figure here)
-
 ```{python message=FALSE, warning=FALSE, echo=FALSE}
 #| label: solrad portland
 #| fig-cap: "Figure 2. Fitted seasonal wave and actual monthly totals of solar radiation in Portland, OR."
@@ -110,8 +108,10 @@ plt.show()
 
 ```
 
-Once all the seasonal data points were gathered, they were fit to a seasonal approximation by fitting their phase and amplitude to a sine wave. The engineered features describing the seasonality of each metric were then scaled and specifically demand was log transformed before they were all fed into principal component analysis for dimensionality reduction. 
+Once the engineered features describing the seasonality of each metric were created, they were then scaled using scalars appropriate for each data type. Phase dimensions did not need scaling, demand required a log scale, and the rest of the features used a robust scaler that scales each distribution by its median rather than its mean.
 
-It was found that 9 dimensions could explain 95% of the variance for the input dataset, and these 9 dimensions were then used for clustering using kmeans into 10 clusters. The resulting clusters were visualized using linear discriminant analysis and a geographic projection. 
+With some features being colinear, for example seasonal peak in temperature and solar radiation, it was apparent our model would benefit from dimensionality reduction. We opted to use PCA to reduce our input dimension down to as few dimensions as possible to explain 95% of the variance in our data, which was found to be 9 dimensions. 
 
+These 9 dimensions were the final input for our clustering algorithm. Kmeans clustering was used to find similar zip codes based on the input features, and the best results from clustering was to produce 10 distinct clusters. 
 
+The resulting clusters were visualized using linear discriminant analysis, which shows generally how the clusters were chosen in terms of the features used, however the visualization is limited to only two dimensions and the dimensions chosen notably under represent demand, leading to some clusters to appear more entangled in the visualization than they are in the actual space used for clustering. Finally, the clusters were visualized on a geographic projection, simply plotting each zip code on a map for a relatively intuitive visual. 
