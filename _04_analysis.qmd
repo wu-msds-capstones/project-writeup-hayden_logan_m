@@ -46,7 +46,67 @@ Each monthly summary as a raw data point was then fit to a sine wave, where the 
 ```{python message=FALSE, warning=FALSE, echo=FALSE}
 #| label: solrad portland
 #| fig-cap: "Figure 2. Fitted seasonal wave and actual monthly totals of solar radiation in Portland, OR."
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
+monthly = pd.read_csv('../project-workbook-hayden_logan_m/shared_data/monthly_solar.csv')
+
+# Get one ZIP code
+zip_data = monthly.loc[monthly['Zip Code'] == 97201].iloc[0]
+
+months = ["jan", "feb", "mar", "apr", "may", "jun",
+          "jul", "aug", "sep", "oct", "nov", "dec"]
+
+values = np.array([zip_data[f"solrad_{m}"] for m in months], dtype=float)
+t = np.arange(12)
+
+# Fit annual sine wave
+X = np.column_stack([
+    np.ones(12),
+    np.cos(2 * np.pi * t / 12),
+    np.sin(2 * np.pi * t / 12)
+])
+
+model = LinearRegression(fit_intercept=False).fit(X, values)
+baseline, beta_cos, beta_sin = model.coef_
+
+# Convert to amplitude + phase
+amplitude = np.sqrt(beta_cos**2 + beta_sin**2)
+phase = np.arctan2(beta_cos, beta_sin)
+r2 = model.score(X, values)
+
+# Smooth sine wave
+t_smooth = np.linspace(0, 12, 300)
+y_smooth = baseline + amplitude * np.sin(
+    2 * np.pi * t_smooth / 12 + phase
+)
+
+# Plot
+fig, ax = plt.subplots(figsize=(10, 5))
+ax.bar(t, values, alpha=0.6, label="Actual")
+ax.plot(t_smooth, y_smooth, linewidth=2.5, label="Fitted sine wave")
+
+ax.set_xticks(t)
+ax.set_xticklabels(months)
+ax.set_ylabel("Solar radiation (kWh/m²/day)")
+ax.set_title("Portland, OR (97201) — Monthly Seasonality")
+ax.legend()
+
+ax.text(
+    0.02, 0.97,
+    f"Baseline = {baseline:.2f}\n"
+    f"Amplitude = {amplitude:.2f}\n"
+    f"Phase = {phase:.2f}\n"
+    f"R² = {r2:.3f}",
+    transform=ax.transAxes,
+    va="top",
+    bbox=dict(boxstyle="round", facecolor="white", alpha=0.8)
+)
+
+plt.tight_layout()
+plt.show()
 
 ```
 
