@@ -2,13 +2,12 @@
 
 We used above-average EVI to determine which zip codes were in high need of microgrid installation. 14161 zip codes were identified as having above-average vulnerability. Out of the high need zip codes, 6946 of those zip codes were also identified as having above-average potential photovoltaic output. 
 
-Once all the seasonal data points were gathered, they were fit to a seasonal approximation by fitting their phase and amplitude to a sine wave. The engineered features describing the seasonality of each metric were then scaled and specifically demand was log transformed before they were all fed into principal component analysis for dimensionality reduction. 
-
-It was found that 9 dimensions could explain 95% of the variance for the input dataset, and these 9 dimensions were then used for clustering using kmeans into 10 clusters. The resulting clusters were visualized using linear discriminant analysis and a geographic projection. 
-
+Identifying zip codes with above-average vulnerability and solar access was used to build a marginal plot that illustrates our target demographic, areas with relatively high demand and means for a microgrid installation. This plot is not used in the subsequent analysis but was used to demonstrate the proof of concept. 
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 #| label: solar vs. vulnerability figure
+#| fig-cap: "Figure 1. Scatterplot of Electrical Vulnerability Index (EVI) compared to potential output per panel from solar panels for each zip code. Densities of each variable are represented in the margins, and means for each variable are represented by dashed lines."
+
 library(tidyverse)
 library(ggplot2)
 library(ggExtra)
@@ -37,3 +36,22 @@ g = ggMarginal(p, type="density",
 
 g
 ```
+
+To analyze for well each zip code would perform as a microgrid candidate, each zip code was geocoded into population weighted latitude and longitude coordinates. Using the coordinates, monthly summaries of solar radiation, average wind speed, cumulative electrical demand, and average temperature were compiled to use as our raw features.
+
+Each monthly summary as a raw data point was then fit to a sine wave, where the components of the sine wave including baseline, amplitude, and phase, were to be used by the clustering model. Reducing each modular month into a continuous sine wave for each feature is visualized below, with an example of monthly solar radiation for Portland, OR. Using the three features of the sine wave instead of the raw data allows the model to more easily compare zip codes by how seasonal they are, how their average month is, and when the seasonality is at its peak.
+
+(logan figure here)
+
+```{python message=FALSE, warning=FALSE, echo=FALSE}
+#| label: solrad portland
+#| fig-cap: "Figure 2. Fitted seasonal wave and actual monthly totals of solar radiation in Portland, OR."
+
+
+```
+
+Once all the seasonal data points were gathered, they were fit to a seasonal approximation by fitting their phase and amplitude to a sine wave. The engineered features describing the seasonality of each metric were then scaled and specifically demand was log transformed before they were all fed into principal component analysis for dimensionality reduction. 
+
+It was found that 9 dimensions could explain 95% of the variance for the input dataset, and these 9 dimensions were then used for clustering using kmeans into 10 clusters. The resulting clusters were visualized using linear discriminant analysis and a geographic projection. 
+
+
