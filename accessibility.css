@@ -1,0 +1,53 @@
+/* Keep manuscript text readable in both Quarto color-scheme modes. */
+body.quarto-light,
+body[data-bs-theme="light"] {
+  color-scheme: light;
+  --bs-body-color: #212529;
+  --bs-body-bg: #ffffff;
+  --bs-secondary-color: #495057;
+  --bs-tertiary-color: #495057;
+  --bs-emphasis-color: #111111;
+  --bs-link-color: #005ea8;
+  --bs-link-hover-color: #003e70;
+  --bs-border-color: #767676;
+  color: #212529;
+  background-color: #ffffff;
+}
+
+body.quarto-dark,
+body[data-bs-theme="dark"] {
+  color-scheme: dark;
+  --bs-body-color: #f1f3f5;
+  --bs-body-bg: #171717;
+  --bs-secondary-color: #d1d5db;
+  --bs-tertiary-color: #d1d5db;
+  --bs-emphasis-color: #ffffff;
+  --bs-link-color: #8ecbff;
+  --bs-link-hover-color: #b8ddff;
+  --bs-border-color: #adb5bd;
+  color: #f1f3f5;
+  background-color: #171717;
+}
+
+body.quarto-light :is(h1, h2, h3, h4, h5, h6, .title, .subtitle),
+body[data-bs-theme="light"] :is(h1, h2, h3, h4, h5, h6, .title, .subtitle) {
+  color: #111111;
+}
+
+body.quarto-dark :is(h1, h2, h3, h4, h5, h6, .title, .subtitle),
+body[data-bs-theme="dark"] :is(h1, h2, h3, h4, h5, h6, .title, .subtitle) {
+  color: #ffffff;
+}
+
+body :is(.text-muted, small, figcaption, .quarto-title-meta, .description) {
+  color: var(--bs-secondary-color) !important;
+}
+
+body a {
+  color: var(--bs-link-color);
+}
+
+body a:hover,
+body a:focus-visible {
+  color: var(--bs-link-hover-color);
+}

@@ -9,6 +9,7 @@ manuscript:
 
 format: 
   html:
+    css: accessibility.css
     theme:
       light: lightly
       dark: darkly
